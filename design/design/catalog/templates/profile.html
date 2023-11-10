@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Личный кабинет {{ user }}</h1>
+{% for application in applications %}
+<p>Временная метка: {{ application.date }}</p>
+<p>Название: {{application.title }}</p>
+<p>Описание: {{application.summary}}</p>
+<p>Категория: {{application.category}}</p>
+<p>Статус: {{application.status}}</p>
+
+<a href ="{% url 'delete' %}">Удалить</a><br>
+
+{% endfor %}
+{% endblock %}

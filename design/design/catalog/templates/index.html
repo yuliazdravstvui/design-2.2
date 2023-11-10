@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Добро пожаловать на наш портал</h1>
+{% if user.is_authenticated %}
+<h1>Список заявок</h1>
+{% for application in applications %}
+<p>Временная метка:{{ application.date }}</p>
+<p>Название: {{ application.title }}</p>
+<p>Категория: {{ application.category }}</p>
+<p>Фотография: <img src="{{ application.photo_file.url }}"></p>
+<a href ="{% url 'delete' %}">Удалить</a>
+
+
+
+{% endfor %}
+{% endif %}
+{% endblock %}

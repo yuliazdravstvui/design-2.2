@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="Application">
+        {% if Application.published_date %}
+            <div class="date">
+                {{ Application.published_date }}
+            </div>
+        {% endif %}
+        <a class="btn btn-default" href="{% url 'Application_edit' pk=Application.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
+        <h1>{{ Application.title }}</h1>
+        <p>{{ Application.text|linebreaksbr }}</p>
+    </div>
+{% endblock %}

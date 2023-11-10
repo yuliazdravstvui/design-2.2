@@ -1,0 +1,39 @@
+ {% extends "base.html" %}
+ {% block content %}
+
+<html>
+<head>
+    <title>Добавить заявку</title>
+</head>
+<body>
+    <h1>Добавить заявку</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label for="timestamp">Временная метка:</label>
+        <input type="datetime-local" name="timestamp" required><br>
+
+        <label for="title">Название:</label>
+        <input type="text" name="title" required><br>
+
+        <label for="description">Описание:</label>
+        <textarea name="description" required></textarea><br>
+
+        <label for="category">Статус:</label>
+        <select name="category">
+            <option value="category1">Новая</option>
+            <option value="category2">Принято в работу</option>
+            <option value="category3">Выполнено</option>
+        </select><br>
+
+        <label for="status">Категория:</label>
+        <input type="text" name="status" required><br>
+
+        <label for="image">PNG файл:</label>
+        <input type="file" name="image" accept="image/png"><br>
+
+        <input type="submit" value="Добавить заявку">
+    </form>
+</body>
+</html>
+  {% endblock %}
