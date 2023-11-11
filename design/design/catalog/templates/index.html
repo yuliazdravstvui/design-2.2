@@ -1,18 +1,35 @@
 {% extends "base.html" %}
+
 {% block content %}
+    <h1>Добро пожаловать на главную страницу Design.pro</h1>
+    <p>Наша дизайн-студия специализируется на создании уникальных дизайнов интерьеров жилых помещений.</p>
+    {% if user.is_authenticated %}
+        <p>Количество заявок принятых в работу: 2{{ num_applications }}</p>
+        <h3>Последние выполненные заявки:</h3>
+            {% for application in applications %}
+                <p>Временная метка: {{ application.date }}</p>
+                <p>Название: {{ application.title }}</p>
+                <p>Категория: {{ application.category }}</p>
+                <p>Статус: {{ application.get_status_display }}</p>
+                <p><img src="{{ application.photo_file.url }}"></p>
+            {% endfor %}
+    {% endif %}
 
-<h1>Добро пожаловать на наш портал</h1>
-{% if user.is_authenticated %}
-<h1>Список заявок</h1>
-{% for application in applications %}
-<p>Временная метка:{{ application.date }}</p>
-<p>Название: {{ application.title }}</p>
-<p>Категория: {{ application.category }}</p>
-<p>Фотография: <img src="{{ application.photo_file.url }}"></p>
-<a href ="{% url 'delete' %}">Удалить</a>
-
-
-
-{% endfor %}
-{% endif %}
+    {% block pagination %}
+        {% if is_paginated %}
+            <div class="pagination">
+                <span class="page-links">
+                {% if page_obj.has_previous%}
+                    <a href="{{request.path}}?page={{page_obj.previous_page_number}}"><--</a>
+                {% endif %}
+                <span class="page-current">
+                Страница {{page_obj.number}} из {{page_obj.paginator.num_pages}}.
+                </span>
+                {% if page_obj.has_next %}
+                    <a href="{{request.path}}?page={{page_obj.next_page_number}}">--></a>
+                {% endif %}
+                </span>
+            </div>
+        {% endif%}
+    {% endblock %}
 {% endblock %}

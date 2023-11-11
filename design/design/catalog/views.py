@@ -9,7 +9,6 @@ from django.views import generic
 from django.views.generic import CreateView, DeleteView, UpdateView
 
 from .forms import RegisterUserForm, ChangeStatusRequest
-from .forms import ApplicationForm
 from .models import Application, Category
 
 
@@ -40,39 +39,53 @@ def validate_username(request):
 def profile(request):
     return render(request, 'profile.html')
 
-class ApplicationListView(generic.ListView):
+class ApplicationViewUser(generic.ListView):
     model = Application
-    template_name = 'index.html'
-    context_object_name = 'applications'
     paginate_by = 4
-
-
-class ApplicationsByUserListView(LoginRequiredMixin, generic.ListView):
-    model = Application
-    template_name = 'profile.html'
+    template_name = 'my_application.html'
     context_object_name = 'applications'
 
     def get_queryset(self):
-        return Application.objects.filter(user=self.request.user)
+        return Application.objects.filter(user=self.request.user).order_by('-date')
 
-def Application_new(request):
-    if request.method == "POST":
-        form = ApplicationForm(request.POST)
-        if form.is_valid():
-            Application = form.save(commit=False)
-            Application.author = request.user
-            Application.date = timezone.now()
-            Application.save()
-            return redirect('Application_detail', pk=Application.pk)
-    else:
-        form = ApplicationForm()
-    return render(request, 'Application_edit.html', {'form': form})
+class ApplicationViewIndex(generic.ListView):
+    model = Application
+    paginate_by = 4
+    template_name = 'index.html'
+    context_object_name = 'applications'
 
-class ApplicationDelete(ApplicationListView):
+    def get_queryset(self):
+        return Application.objects.filter(status='C')
+
+    def index(request):
+        num_applications = Application.objects.filter(status='P').count()
+        return render(request, 'index.html', context={'num_application': num_applications})
+
+
+class ApplicationCreate(LoginRequiredMixin, CreateView):
+    model = Application
+    fields = ['title', 'description', 'category', 'photo_file']
+    template_name = 'create_application.html'
+    success_url = reverse_lazy('my_application')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def create_application(request):
+        return render(request, "create_application.html")
+
+class ApplicationDelete(DeleteView):
     model = Application
     context_object_name = 'application'
-    template_name = 'delete.html'
-    success_url = reverse_lazy('request')
+    template_name = 'delete_application.html'
+    success_url = reverse_lazy('my_application')
+
+    def delete_application(self, pk):
+        application = Application.objects.filter(user=self.request.user, pk=pk)
+        if application:
+            application.delete()
+        return redirect('my_application')
 
 
 class ApplicationListViewAdmin(generic.ListView):

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+         <h1>Ваши заявки</h1>
+         {% for application in applications %}
+            <p>Временная метка: {{ application.date }}</p>
+            <p>Название: {{ application.title }}</p>
+            <p>Категория: {{ application.category }}</p>
+            <p>Статус: {{ application.get_status_display }}</p>
+            <p><img src="{{ application.photo_file.url }}" style="height: 300px; width: 300px"></p>
+            {% if application.status == 'N' %}
+                <a href="{% url 'delete' application.id %}" style="color: red;">Удалить</a><br>
+            {% endif %}
+        {% endfor %}
+
+        {% block pagination %}
+            {% if is_paginated %}
+                <div class="pagination">
+                    <span class="page-links">
+                    {% if page_obj.has_previous%}
+                        <a href="{{request.path}}?page={{page_obj.previous_page_number}}"><--</a>
+                    {% endif %}
+                    <span class="page-current">
+                    Страница {{page_obj.number}} из {{page_obj.paginator.num_pages}}.
+                    </span>
+                    {% if page_obj.has_next %}
+                        <a href="{{request.path}}?page={{page_obj.next_page_number}}">--></a>
+                    {% endif %}
+                    </span>
+                </div>
+            {% endif%}
+        {% endblock %}
+{% endblock %}

@@ -1,115 +1,29 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    {% block title %}<title>Local Library</title>{% endblock %}
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
+<head>
+  {% block title %}<title>Design.pro</title>{% endblock %}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <!-- Add additional CSS in static file -->
-  {% load static %}
-  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
-<body >
-
-<div style="display: flex">
-    <div class="sidebar-nav" style="margin: 20px 0 0 20px">
-      {% block slidebar %}
-        {% if user.is_superuser %}
-            <h2>Страница администратора</h2>
-            <a href="{% url 'admin_base'%}">Просмотр заявок</a><br>
-            <a href="{% url 'category'%}">Категории</a><br>
-            <p><a href="{% url 'profile' %}">Личный кабинет</a></p>
-            <a href="{% url 'logout'%}">Выход</a><br>
+<body style="display: flex;">
+  <div style="margin: 20px 40px 0 20px;">
+    {% block sidebar %}
+      <nav>
+        <p><a href="{% url 'index' %}">Главная</a></p>
+        {% if user.is_authenticated %}
+          <p><a href="{% url 'profile' %}">Личный кабинет</a></p>
+          <p><a href="{% url 'my_application' %}">Мои заявки</a></p>
+          <p><a href="{% url 'logout' %}">Выйти</a></p>
         {% else %}
-        <nav>
-            <p><a href="{% url 'index' %}">Главная</a></p>
-            {% if user.is_authenticated %}
-            <p><a href="{% url 'profile' %}">Личный кабинет</a></p>
-                <p><a href="{% url 'request' %}">Добавить заявку</a></p>
-                <p><a href="{% url 'logout' %}">Выход</a></p>
-            {% else %}
-                <p><a href="{% url 'login' %}">Вход</a></p>
-                <p><a href="{% url 'register'%}">Регистрация</a></p>
-            {% endif %}
-              {% endif %}
-            {% endblock %}
-       </nav>
-    </div>
-
-<div class="container-fluid">
-
-<div class="row">
-  <div class="col-sm-2">
-  {% block sidebar %}
-  <ul class="sidebar-nav">
-    <li><a href="{% url 'index' %}">Главная</a></li>
-  </ul>
-
-  <ul class="sidebar-nav">
-   {% if user.is_authenticated %}
-     <li>User: {{ user.get_username }}</li>
-     <li><a href="{% url 'profile' %}">Личный кабинет</a></li>
-      <li><a href="{% url 'Application_new' %}">Новая заявка</a></li>
-     <li><a href="{% url 'logout' %}?next={{request.path}}">Выйти</a></li>
-   {% else %}
-     <li><a href="{% url 'login' %}">Войти</a></li>
-      <li><a href="{% url 'register' %}">Зарегистрироваться</a></li>
-   {% endif %}
-  </ul>
-
-   {% if user.is_staff %}
-   <hr>
-   <ul class="sidebar-nav">
-   <li>Staff</li>
-   {% if perms.catalog.can_mark_returned %}
-   <li><a href="">All borrowed</a></li>
-   {% endif %}
-   </ul>
-    {% endif %}
-
-{% endblock %}
+          <p><a href="{% url 'login' %}?next={{ request.path }}">Войти</a> или <a href="{% url 'registration' %}">Зарегистрироваться</a></p>
+        {% endif %}
+      </nav>
+    {% endblock %}
   </div>
-  <div class="col-sm-10 ">
-
-      {% if user.is_authenticated %}
-        {% if application_list %}
-        <h1>Список заявок</h1>
-
-      {% for ap in application_list %}
-            <ul>
-                <li>{{ap.date}}</li>
-                <li><a href="{{application.get_absolute_url }}"> {{ap.name}}</a> ({{ap.category}})</li>
-                <img src="{{ ap.photo_file.url}}">
-            </ul>
-            {% endfor %}
-          {% endif %}
-      {% endif %}
-
-
-  {% block pagination %}
-    {% if is_paginated %}
-        <div class="pagination">
-            <span class="page-links">
-                {% if page_obj.has_previous %}
-                    <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
-                {% endif %}
-                <span class="page-current">
-                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                </span>
-                {% if page_obj.has_next %}
-                    <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>
-                {% endif %}
-            </span>
-        </div>
-    {% endif %}
-  {% endblock %}
-  </div>
-</div>
-</div>
-<div>{% block content %}{% endblock %}</div>
+  <div>{% block content %}{% endblock %}</div>
 </body>
-</html>

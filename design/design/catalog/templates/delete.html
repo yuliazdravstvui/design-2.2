@@ -3,7 +3,7 @@
 {% block content%}
 
 <h1>Удалить заявку</h1>
-{% if application.get_status_display == 'Новая'%}
+{% if application.status == 'N'%}
 <p>Вы точно хотите удалить заявку: {{application.title}}</p>
     <form action="" method="POST">
     {% csrf_token %}

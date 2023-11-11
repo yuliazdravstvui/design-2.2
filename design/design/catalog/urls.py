@@ -12,9 +12,8 @@ urlpatterns = [
     path('register', views.RegisterView.as_view(), name='register'),
     path('validate_username', validate_username, name='validate_username'),
     path('logout/', LogoutView.as_view(), name='logout'),
-    path('profile/', ApplicationsByUserListView.as_view(), name='profile'),
-    path('Application/new/', views.Application_new, name='Application_new'),
-    path('delete/', views.ApplicationDelete.as_view(), name='delete'),
+    path('profile/', profile, name='profile'),
+
 
     path('admin_base/', views.ApplicationListViewAdmin.as_view(), name='admin_base'),
     path('category/', views.CategoryView.as_view(), name='category'),
@@ -22,5 +21,8 @@ urlpatterns = [
     path('creating_category/', views.CategoryCreate.as_view(), name='creating_category'),
     path('change/<int:pk>/status/', views.ChangeStatusRequest.as_view(), name='change_status'),
 
+    path('application/', ApplicationViewUser.as_view(), name='my_application'),
+    path('create/', ApplicationCreate.as_view(), name='create'),
+    path('request/<pk>/delete/', ApplicationDelete.as_view(), name='delete'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

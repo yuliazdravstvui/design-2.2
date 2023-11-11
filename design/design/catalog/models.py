@@ -29,12 +29,14 @@ class Category(models.Model):
 
 
 class Application(models.Model):
-    title = models.CharField(max_length=254, default="0")
     STATUS_CHOICES = [
         ('N', 'Новая'),
         ('P', 'Принято в работу'),
         ('C', 'Выполнено'),
     ]
+    title = models.CharField(max_length=200)
+    description = models.TextField(help_text="Введите краткое описание заявки")
+    category = models.ForeignKey(Category, help_text="Выберите категорию заявки", on_delete=models.CASCADE, default='0')
 
     def validate_image(fieldfile_obj):
         filesize = fieldfile_obj.file.size
@@ -42,11 +44,9 @@ class Application(models.Model):
         if filesize > megabyte_limit * 1024 * 1024:
             raise ValidationError("Max file size is %sMB" % str(megabyte_limit))
 
-    category = models.ForeignKey(Category, help_text='Выберите категорию', on_delete=models.CASCADE, default="0")
-    photo_file = models.ImageField(max_length=254, upload_to='image/',
-                                   validators=[validate_image, FileExtensionValidator(['jpg', 'jpeg', 'png', 'bmp'])])
+    photo_file = models.ImageField(max_length=254, upload_to='image/', validators=[validate_image, FileExtensionValidator(['jpg', 'jpeg', 'png', 'bmp'])])
     status = models.CharField(max_length=254, verbose_name='Статус', choices=STATUS_CHOICES, default='N')
-    date = models.DateTimeField(verbose_name='Дата добавления', default=utils.timezone.now)
+    date = models.DateTimeField(verbose_name='Дата добавления', null=True, auto_now_add=True)
     user = models.ForeignKey(CustomUser, verbose_name='Пользователь', on_delete=models.CASCADE)
 
     def get_absolute_url(self):

@@ -66,14 +66,6 @@ class RegisterUserForm(forms.ModelForm):
         fields = ('first_name', 'last_name', 'username', 'email', 'password', 'password2', 'rules')
 
 
-class ApplicationForm(forms.ModelForm):
-    title = forms.CharField(label='Название проекта', error_messages={'required': 'Обязательное поле'})
-    text = forms.CharField(label='Описание проекта', error_messages={'required': 'Обязательное поле'})
-    class Meta:
-            model = Application
-            fields = ('title', 'text', 'category', 'photo_file', 'status', 'date')
-
-
 
 class ChangeStatusRequest(forms.ModelForm):
     comment = forms.CharField(required=False)
