@@ -1,0 +1,8 @@
+<a href="{% url 'base'%}">Назад</a><br>
+   <p>Изменение статуса</p>
+
+<form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+    <button type="submit">Сохранить</button>
+</form>
