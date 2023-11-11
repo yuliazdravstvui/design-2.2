@@ -16,5 +16,11 @@ urlpatterns = [
     path('Application/new/', views.Application_new, name='Application_new'),
     path('delete/', views.ApplicationDelete.as_view(), name='delete'),
 
+    path('admin_base/', views.ApplicationListViewAdmin.as_view(), name='admin_base'),
+    path('category/', views.CategoryView.as_view(), name='category'),
+    path('category/<int:pk>/delete/', views.CategoryDelete.as_view(), name='category_delete'),
+    path('creating_category/', views.CategoryCreate.as_view(), name='creating_category'),
+    path('change/<int:pk>/status/', views.ChangeStatusRequest.as_view(), name='change_status'),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

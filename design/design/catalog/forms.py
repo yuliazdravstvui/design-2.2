@@ -72,3 +72,28 @@ class ApplicationForm(forms.ModelForm):
     class Meta:
             model = Application
             fields = ('title', 'text', 'category', 'photo_file', 'status', 'date')
+
+
+
+class ChangeStatusRequest(forms.ModelForm):
+    comment = forms.CharField(required=False)
+    img = forms.ImageField(required=False)
+    class Meta:
+        model = Application
+        fields = ['status', 'img', 'comment']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        new_status = cleaned_data.get('status')
+
+        if new_status == 'Выполнено':
+            img = cleaned_data.get('img')
+            if not img:
+                raise forms.ValidationError("При смене статуса на 'Выполнено' необходимо прикрепить изображение дизайна")
+
+        if new_status == 'Принято в работу':
+            comment = cleaned_data.get('comment')
+            if not comment:
+                raise forms.ValidationError("При смене статуса на 'Принято в работу' необходимо указать комментарий")
+
+        return cleaned_data

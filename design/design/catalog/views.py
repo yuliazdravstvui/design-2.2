@@ -6,11 +6,11 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DeleteView, UpdateView
 
-from .forms import RegisterUserForm
+from .forms import RegisterUserForm, ChangeStatusRequest
 from .forms import ApplicationForm
-from .models import Application
+from .models import Application, Category
 
 
 def index(request):
@@ -75,7 +75,46 @@ class ApplicationDelete(ApplicationListView):
     success_url = reverse_lazy('request')
 
 
+class ApplicationListViewAdmin(generic.ListView):
+    model = Application
+    template_name = 'base.html'
+    context_object_name = 'application_list'
+    def get_queryset(self):
+        return Application.objects.order_by('-date')[:4]
 
+class ApplicationListView(generic.ListView):
+    model = Application
+    paginate_by = 4
+    template_name = 'base.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['num_application'] = Application.objects.filter(status__exact='Принято в работу').count()
+        return context
+
+
+class CategoryView(generic.ListView):
+    model = Category
+    template_name = 'category.html'
+    context_object_name = 'category'
+
+class CategoryDelete(DeleteView):
+    model = Category
+    context_object_name = 'category'
+    template_name = 'category_delete.html'
+    success_url = reverse_lazy('category')
+
+class CategoryCreate(CreateView):
+    model = Category
+    fields = ['name']
+    template_name = 'creating_category.html'
+    success_url = reverse_lazy('category')
+
+class ChangeStatusRequest(UpdateView):
+    model = Application
+    form_class = ChangeStatusRequest
+    template_name = 'change_status.html'
+    success_url = reverse_lazy('admin_base')
 
 
 
